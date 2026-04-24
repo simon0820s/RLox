@@ -1,4 +1,7 @@
-use std::io::{self, Write};
+use std::{
+    io::{self, Write},
+    process,
+};
 pub mod error;
 use crate::error::RLoxError;
 
@@ -13,6 +16,9 @@ impl RLox {
     pub fn run_file(&mut self, path: &str) {
         let source: String = std::fs::read_to_string(path).expect("Failed to read file");
         self.run(&source);
+        if self.had_error {
+            process::exit(65)
+        };
     }
 
     pub fn run_prompt(&mut self) {
@@ -33,14 +39,14 @@ impl RLox {
     }
 
     fn run(&mut self, source: &str) {
+        self.error(0, "Not implemented yet");
         for ch in source.chars() {
             print!("{}", ch);
         }
-        self.error(0, "Not ready yet.");
     }
-    pub fn error(&mut self, line: usize, message: &str) {
-        let err: RLoxError = RLoxError::new(line, "".to_string(), message.to_string());
-        err.report();
+
+    fn error(&mut self, line: usize, message: &str) {
+        RLoxError::new(line, "", message);
         self.had_error = true;
     }
 }

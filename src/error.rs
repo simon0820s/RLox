@@ -1,27 +1,17 @@
 use colored::Colorize;
 
-pub struct RLoxError {
-    pub line: usize,
-    pub location: String,
-    pub message: String,
-}
+pub struct RLoxError;
 
 impl RLoxError {
-    pub fn new(line: usize, location: String, message: String) -> Self {
-        Self {
-            line,
-            location,
-            message,
-        }
+    pub fn new(line: usize, location: &str, message: &str) -> Self {
+        let error: Self = Self;
+        error.report(line, location, message);
+        error
     }
 
-    pub fn report(&self) {
-        let prefix: String = format!("[line {}] Error{}", self.line, self.location);
+    fn report(&self, line: usize, location: &str, message: &str) {
+        let prefix: String = format!("[line {}] Error{}", line, location);
 
-        eprintln!(
-            "{}: {}",
-            prefix.red().bold(),
-            self.message.white()
-        );
+        eprintln!("{}: {}", prefix.red().bold(), message.white());
     }
 }
