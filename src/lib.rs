@@ -1,10 +1,14 @@
 use std::io::{self, Write};
+pub mod error;
+use crate::error::RLoxError;
 
-pub struct RLox {}
+pub struct RLox {
+    had_error: bool,
+}
 
 impl RLox {
     pub fn new() -> Self {
-        RLox {}
+        RLox { had_error: false }
     }
     pub fn run_file(&mut self, path: &str) {
         let source: String = std::fs::read_to_string(path).expect("Failed to read file");
@@ -29,6 +33,14 @@ impl RLox {
     }
 
     fn run(&mut self, source: &str) {
-        println!("{}", source);
+        for ch in source.chars() {
+            print!("{}", ch);
+        }
+        self.error(0, "Not ready yet.");
+    }
+    pub fn error(&mut self, line: usize, message: &str) {
+        let err: RLoxError = RLoxError::new(line, "".to_string(), message.to_string());
+        err.report();
+        self.had_error = true;
     }
 }
