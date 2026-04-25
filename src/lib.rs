@@ -3,6 +3,8 @@ use std::{
     process,
 };
 pub mod error;
+pub mod token_type;
+pub mod token;
 use crate::error::RLoxError;
 
 pub struct RLox {
