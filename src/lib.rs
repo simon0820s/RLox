@@ -5,7 +5,10 @@ use std::{
 pub mod error;
 pub mod token_type;
 pub mod token;
+pub mod scanner;
+pub mod enums;
 use crate::error::RLoxError;
+use crate::scanner::Scanner;
 
 pub struct RLox {
     had_error: bool,
@@ -42,9 +45,11 @@ impl RLox {
 
     fn run(&mut self, source: &str) {
         self.error(0, "Not implemented yet");
-        for ch in source.chars() {
-            print!("{}", ch);
-        }
+       let mut scanner: Scanner = Scanner::new(source.to_string());
+        let tokens: Vec<token::Token> = scanner.scan_tokens();
+        for token in tokens {
+            println!("{}", token);
+        } 
     }
 
     fn error(&mut self, line: usize, message: &str) {

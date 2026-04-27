@@ -1,15 +1,15 @@
-use crate::token_type::TokenType;
+use crate::enums::{Literal, TokenType};
 
 #[derive(Clone)]
 pub struct Token {
     pub type_: TokenType,
     pub lexeme: String,
-    pub literal: Option<String>,
-    pub line: i32,
+    pub literal: Option<Literal>,
+    pub line: usize,
 }
 
 impl Token {
-    pub fn new(type_: TokenType, lexeme: String, literal: Option<String>, line: i32) -> Token {
+    pub fn new(type_: TokenType, lexeme: String, literal: Option<Literal>, line: usize) -> Token {
         Token {
             type_,
             lexeme,
