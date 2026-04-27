@@ -21,13 +21,11 @@ impl Scanner {
         }
     }
     pub fn scan_tokens(&mut self) -> Vec<Token> {
-        loop {
+        while self.is_at_end() == false {
             self.start = self.current;
-            if self.is_at_end() {
-                break;
-            }
             self.scan_token();
         }
+        self.add_token(TokenType::Eof, None);
         self.tokens.clone()
     }
 
@@ -44,6 +42,51 @@ impl Scanner {
             '+' => self.add_token(TokenType::Plus, None),
             ';' => self.add_token(TokenType::Semicolon, None),
             '*' => self.add_token(TokenType::Star, None),
+            '!' => {
+                let token_type = if self.match_char('=') {
+                    TokenType::BangEqual
+                } else {
+                    TokenType::Bang
+                };
+                self.add_token(token_type, None);
+            }
+            '=' => {
+                let token_type = if self.match_char('=') {
+                    TokenType::EqualEqual
+                } else {
+                    TokenType::Equal
+                };
+                self.add_token(token_type, None);
+            }
+            '<' => {
+                let token_type = if self.match_char('=') {
+                    TokenType::LessEqual
+                } else {
+                    TokenType::Less
+                };
+                self.add_token(token_type, None);
+            }
+            '>' => {
+                let token_type = if self.match_char('=') {
+                    TokenType::GreaterEqual
+                } else {
+                    TokenType::Greater
+                };
+                self.add_token(token_type, None);
+            }
+            '/' => {
+                if self.match_char('/') {
+                    while self.peek() != '\n' && !self.is_at_end() {
+                        self.advance();
+                    }
+                } else {
+                    self.add_token(TokenType::Slash, None);
+                }
+            }
+            ' ' => {}
+            '\r' => {}
+            '\t' => {}
+            '\n' => self.line += 1,
             _ => {
                 RLoxError::new(self.line, "", &format!("Unexpected character: {}", c));
             }
@@ -65,5 +108,21 @@ impl Scanner {
 
     fn is_at_end(&self) -> bool {
         self.current >= self.source.len() - 1
+    }
+    fn match_char(&mut self, expected: char) -> bool {
+        if self.is_at_end() {
+            return false;
+        }
+        if self.source[self.current..].chars().next().unwrap() != expected {
+            return false;
+        }
+        self.current += expected.len_utf8();
+        true
+    }
+    fn peek(&self) -> char {
+        if self.is_at_end() {
+            return '\0';
+        }
+        self.source[self.current..].chars().next().unwrap()
     }
 }
