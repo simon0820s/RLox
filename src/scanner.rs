@@ -82,13 +82,18 @@ impl Scanner {
                 } else {
                     self.add_token(TokenType::Slash, None);
                 }
-            }
+            },
+            '"' => {self.string()},
             ' ' => {}
             '\r' => {}
             '\t' => {}
             '\n' => self.line += 1,
             _ => {
-                RLoxError::new(self.line, "", &format!("Unexpected character: {}", c));
+                if c.is_digit(10) {
+                    self.number();
+                } else {
+                    RLoxError::new(self.line, "", &format!("Unexpected character: {}", c));
+                }
             }
         }
     }
@@ -124,5 +129,39 @@ impl Scanner {
             return '\0';
         }
         self.source[self.current..].chars().next().unwrap()
+    }
+    fn peek_next(&self) -> char {
+        if self.current + 1 >= self.source.len() {
+            return '\0';
+        }
+        self.source[self.current + 1..].chars().next().unwrap()
+    }
+    fn string(&mut self) {
+        while self.peek() != '"' && !self.is_at_end() {
+            if self.peek() == '\n' {
+                self.line += 1;
+            }
+            self.advance();
+        }
+        if self.is_at_end() {
+            RLoxError::new(self.line, "", "Unterminated string.");
+            return;
+        }
+        self.advance();
+        let value: String = self.source[self.start + 1..self.current - 1].to_string();
+        self.add_token(TokenType::String, Some(Literal::String(value)));
+    }
+    fn number(&mut self) {
+        while self.peek().is_digit(10) {
+            self.advance();
+        }
+        if self.peek() == '.' && self.peek_next().is_digit(10) {
+            self.advance();
+            while self.peek().is_digit(10) {
+                self.advance();
+            }
+        }
+        let value: f64 = self.source[self.start..self.current].parse().unwrap();
+        self.add_token(TokenType::Number, Some(Literal::Number(value)));
     }
 }
