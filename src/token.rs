@@ -1,4 +1,4 @@
-use crate::enums::{Literal, TokenType};
+use crate::constants::{Literal, TokenType};
 
 #[derive(Clone)]
 pub struct Token {

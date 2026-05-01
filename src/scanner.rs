@@ -1,4 +1,4 @@
-use crate::enums::{Literal, TokenType};
+use crate::constants::{Literal, TokenType, keywords};
 use crate::error::RLoxError;
 use crate::token::Token;
 
@@ -82,8 +82,8 @@ impl Scanner {
                 } else {
                     self.add_token(TokenType::Slash, None);
                 }
-            },
-            '"' => {self.string()},
+            }
+            '"' => self.string(),
             ' ' => {}
             '\r' => {}
             '\t' => {}
@@ -91,6 +91,8 @@ impl Scanner {
             _ => {
                 if c.is_digit(10) {
                     self.number();
+                } else if self.is_alpha(c) {
+                    self.identifier();
                 } else {
                     RLoxError::new(self.line, "", &format!("Unexpected character: {}", c));
                 }
@@ -163,5 +165,19 @@ impl Scanner {
         }
         let value: f64 = self.source[self.start..self.current].parse().unwrap();
         self.add_token(TokenType::Number, Some(Literal::Number(value)));
+    }
+    fn identifier(&mut self) {
+        while self.is_alphanumeric(self.peek()) {
+            self.advance();
+        }
+        let text = self.source[self.start..self.current].to_string();
+        let token_type = keywords().get(&text.as_str()).cloned().unwrap_or(TokenType::Identifier);
+        self.add_token(token_type, None);
+    }
+    fn is_alpha(&self, c: char) -> bool {
+        c.is_alphabetic() || c == '_'
+    }
+    fn is_alphanumeric(&self, c: char) -> bool {
+        self.is_alpha(c) || c.is_digit(10)
     }
 }

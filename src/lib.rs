@@ -6,7 +6,7 @@ pub mod error;
 pub mod token_type;
 pub mod token;
 pub mod scanner;
-pub mod enums;
+pub mod constants;
 use crate::error::RLoxError;
 use crate::scanner::Scanner;
 
