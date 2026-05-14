@@ -180,4 +180,5 @@ impl Scanner {
     fn is_alphanumeric(&self, c: char) -> bool {
         self.is_alpha(c) || c.is_digit(10)
     }
+    
 }

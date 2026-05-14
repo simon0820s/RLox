@@ -3,10 +3,10 @@ use std::{
     process,
 };
 pub mod error;
-pub mod token_type;
 pub mod token;
 pub mod scanner;
 pub mod constants;
+pub mod expressions;
 use crate::error::RLoxError;
 use crate::scanner::Scanner;
 

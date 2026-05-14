@@ -1,6 +1,6 @@
 use crate::constants::{Literal, TokenType};
 
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub struct Token {
     pub type_: TokenType,
     pub lexeme: String,
