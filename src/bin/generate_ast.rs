@@ -52,7 +52,7 @@ fn define_type(class_name: &str, field_list: &str) -> String {
     let mut source: String = String::new();
     source.push_str(&format!("    {} {{\n", class_name));
     for field in field_list.split(",") {
-        let field_parts: Vec<&str> = field.trim().split(" ").collect();
+        let field_parts: Vec<&str> = field.trim().split_whitespace().collect();
         let field_type: &str = field_parts[0];
         let field_name: &str = field_parts[1];
         source.push_str(&format!("        {}: {},\n", field_name, field_type));
